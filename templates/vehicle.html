@@ -1,0 +1,340 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}{{ car.title }} - {{ car.year }} | Auto Sales{% endblock %}
+
+{% block extra_css %}
+<style>
+    .vehicle-detail {
+        padding-top: 100px;
+    }
+
+    .vehicle-gallery {
+        position: relative;
+    }
+
+    .main-image {
+        width: 100%;
+        height: 500px;
+        object-fit: cover;
+        border-radius: 0;
+    }
+
+    .thumbnail-gallery {
+        display: flex;
+        gap: 15px;
+        margin-top: 15px;
+        overflow-x: auto;
+        padding: 10px 0;
+    }
+
+    .thumbnail {
+        width: 120px;
+        height: 80px;
+        object-fit: cover;
+        cursor: pointer;
+        opacity: 0.6;
+        transition: all 0.3s ease;
+        border: 3px solid transparent;
+    }
+
+    .thumbnail:hover,
+    .thumbnail.active {
+        opacity: 1;
+        border-color: var(--gold);
+    }
+
+    .vehicle-info-card {
+        background: var(--white);
+        padding: 40px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        position: sticky;
+        top: 100px;
+    }
+
+    .vehicle-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--black);
+        margin-bottom: 15px;
+    }
+
+    .vehicle-price {
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--gold);
+        margin: 25px 0;
+    }
+
+    .spec-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        margin: 30px 0;
+    }
+
+    .spec-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .spec-icon {
+        font-size: 1.5rem;
+        color: var(--gold);
+        margin-top: 3px;
+    }
+
+    .spec-content h5 {
+        font-size: 0.85rem;
+        color: var(--text-gray);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 5px;
+    }
+
+    .spec-content p {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--black);
+        margin: 0;
+    }
+
+    .features-list {
+        list-style: none;
+        padding: 0;
+        margin: 30px 0;
+    }
+
+    .features-list li {
+        padding: 12px 0;
+        border-bottom: 1px solid #eee;
+        color: var(--black);
+    }
+
+    .features-list li i {
+        color: var(--gold);
+        margin-right: 10px;
+    }
+
+    .contact-cta {
+        background: var(--light-gray);
+        padding: 30px;
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .contact-cta h4 {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .description-section {
+        margin-top: 60px;
+    }
+
+/* 1. Tugmalarning umumiy holati (Active bo'lmagandagi ko'rinishi) */
+.description-tabs .nav-link {
+    color: #666 !important; /* Aniq ko'rinadigan kulrang rang */
+    font-weight: 600;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 15px 30px;
+    margin: 0;
+    background: transparent !important; /* Fonini shaffof qilish */
+    transition: all 0.3s ease;
+}
+
+/* 2. Sishqoncha ustiga kelgandagi holat (Hover) */
+.description-tabs .nav-link:hover {
+    color: var(--gold);
+    border-bottom-color: #eee; /* Ozgina seziladigan chiziq */
+}
+
+/* 3. Faol (Active) holat */
+.description-tabs .nav-link.active {
+    color: var(--gold) !important;
+    border-bottom-color: var(--gold) !important;
+    background: transparent !important;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="vehicle-detail">
+    <div class="container">
+        <div class="row g-5">
+            <!-- Left Column - Gallery -->
+            <div class="col-lg-7">
+                <div class="vehicle-gallery" data-aos="fade-right">
+                    {% if images %}
+                        <img src="{{ images.0.image.url }}" alt="{{ car.title }}" class="main-image" id="mainImage">
+                        <div class="thumbnail-gallery">
+                            {% for img in images %}
+                            <img src="{{ img.image.url }}" alt="{{ car.title }}" class="thumbnail {% if forloop.first %}active{% endif %}" onclick="changeMainImage('{{ img.image.url }}', this)">
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <img src="{% static 'images/no-image.jpg' %}" alt="No image" class="main-image">
+                    {% endif %}
+                </div>
+
+                <!-- Description Tabs -->
+                <div class="description-section" data-aos="fade-up">
+                    <ul class="nav nav-tabs description-tabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#description">Description</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#specifications">Specifications</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#features">Features</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content py-4">
+                        <div class="tab-pane fade show active" id="description">
+                            <p style="line-height: 1.8;">{{ car.description|default:"This exceptional vehicle represents the pinnacle of automotive excellence. Meticulously maintained and carefully preserved, it offers a unique opportunity to own a piece of automotive history. Every detail has been attended to, ensuring that this vehicle is ready to provide years of driving pleasure." }}</p>
+                        </div>
+                        <div class="tab-pane fade" id="specifications">
+                            <div class="row g-3">
+                                <div class="col-md-6"><strong>VIN:</strong> {{ car.vin|default:"Available upon request" }}</div>
+                                <div class="col-md-6"><strong>Stock #:</strong> {{ car.id }}</div>
+                                <div class="col-md-6"><strong>Make:</strong> {{ car.brand }}</div>
+                                <div class="col-md-6"><strong>Model:</strong> {{ car.title }}</div>
+                                <div class="col-md-6"><strong>Year:</strong> {{ car.year }}</div>
+                                <div class="col-md-6"><strong>Body Type:</strong> {{ car.body_type }}</div>
+                                <div class="col-md-6"><strong>Mileage:</strong> {{ car.mileage|intcomma|default:"N/A" }} miles</div>
+                                <div class="col-md-6"><strong>Fuel Type:</strong> {{ car.fuel_type|title }}</div>
+                                <div class="col-md-6"><strong>Transmission:</strong> {{ car.transmission }}</div>
+                                <div class="col-md-6"><strong>Exterior Color:</strong> {{ car.exterior_color|default:"See photos" }}</div>
+                                <div class="col-md-6"><strong>Interior Color:</strong> {{ car.interior_color|default:"See photos" }}</div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="features">
+                            <ul class="features-list">
+                                <li><i class="bi bi-check-circle-fill"></i> Power Steering</li>
+                                <li><i class="bi bi-check-circle-fill"></i> Air Conditioning</li>
+                                <li><i class="bi bi-check-circle-fill"></i> Premium Sound System</li>
+                                <li><i class="bi bi-check-circle-fill"></i> Leather Interior</li>
+                                <li><i class="bi bi-check-circle-fill"></i> Chrome Wheels</li>
+                                <li><i class="bi bi-check-circle-fill"></i> Fully Restored</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Info -->
+            <div class="col-lg-5">
+                <div class="vehicle-info-card" data-aos="fade-left">
+                    <h1 class="vehicle-title">{{ car.title }}</h1>
+                    <p class="text-muted mb-0">{{ car.body_type }} • {{ car.year }}</p>
+                    <div class="vehicle-price">${{ car.price|intcomma }}</div>
+
+                    <div class="spec-grid">
+                        <div class="spec-item">
+                            <i class="bi bi-calendar-event spec-icon"></i>
+                            <div class="spec-content">
+                                <h5>Year</h5>
+                                <p>{{ car.year }}</p>
+                            </div>
+                        </div>
+                        <div class="spec-item">
+                            <i class="bi bi-speedometer2 spec-icon"></i>
+                            <div class="spec-content">
+                                <h5>Mileage</h5>
+                                <p>{{ car.mileage|intcomma|default:"N/A" }} mi</p>
+                            </div>
+                        </div>
+                        <div class="spec-item">
+                            <i class="bi bi-fuel-pump spec-icon"></i>
+                            <div class="spec-content">
+                                <h5>Fuel Type</h5>
+                                <p>{{ car.fuel_type|title }}</p>
+                            </div>
+                        </div>
+                        <div class="spec-item">
+                            <i class="bi bi-gear spec-icon"></i>
+                            <div class="spec-content">
+                                <h5>Transmission</h5>
+                                <p>{{ car.transmission }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button class="btn btn-gold btn-lg" data-bs-toggle="modal" data-bs-target="#contactModal">
+                            <i class="bi bi-envelope me-2"></i>Contact About This Vehicle
+                        </button>
+                        <a href="tel:{{site.phone}}" class="btn btn-outline-dark btn-lg">
+                            <i class="bi bi-telephone me-2"></i>Call: {{site.phone}}
+                        </a>
+                    </div>
+
+                    <div class="contact-cta">
+                        <h4><i class="bi bi-shield-check text-gold me-2"></i>Quality Guaranteed</h4>
+                        <p class="mb-0">Every vehicle is thoroughly inspected and comes with our exclusive warranty.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title">Inquire About {{ car.title }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form method="POST" action="{% url 'car:contact_for_car' car.pk %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Full Name *</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email Address *</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" name="phone" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Message *</label>
+                        <textarea name="message" class="form-control" rows="4" required>I'm interested in the {{ car.year }} {{ car.title }}. Please contact me with more information.</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-gold w-100">
+                        <i class="bi bi-send me-2"></i>Send Inquiry
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function changeMainImage(imageSrc, thumbnail) {
+        document.getElementById('mainImage').src = imageSrc;
+        
+        // Remove active class from all thumbnails
+        document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+        
+        // Add active class to clicked thumbnail
+        thumbnail.classList.add('active');
+    }
+</script>
+{% endblock %}

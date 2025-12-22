@@ -1,0 +1,363 @@
+/* ===================================
+   Global CSS for Auto Sales Website
+   Colors: Gold (#d4af37), Black (#1a1a1a), White (#ffffff)
+   =================================== */
+
+/* Root Variables */
+:root {
+    --gold: #d4af37;
+    --dark-gold: #b8941f;
+    --black: #1a1a1a;
+    --white: #ffffff;
+    --light-gray: #f8f9fa;
+    --text-gray: #6c757d;
+    --transition: all 0.3s ease;
+}
+
+/* Reset & Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    color: var(--black);
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+a {
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Utility Classes */
+.text-gold {
+    color: var(--gold) !important;
+}
+
+.bg-gold {
+    background-color: var(--gold) !important;
+}
+
+.border-gold {
+    border-color: var(--gold) !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--light-gray);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gold);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--dark-gold);
+}
+
+/* Selection */
+::selection {
+    background: var(--gold);
+    color: var(--white);
+}
+
+/* Loading Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Hover Effects */
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+/* Image Overlay */
+.image-overlay {
+    position: relative;
+    overflow: hidden;
+}
+
+.image-overlay::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.7), rgba(212, 175, 55, 0.3));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.image-overlay:hover::after {
+    opacity: 1;
+}
+
+/* Custom Button Styles */
+.btn {
+    border-radius: 0;
+    padding: 12px 30px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: var(--transition);
+}
+
+.btn-gold {
+    background: linear-gradient(135deg, var(--gold), var(--dark-gold));
+    color: var(--white);
+    border: none;
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+}
+
+.btn-gold:hover {
+    background: linear-gradient(135deg, var(--dark-gold), var(--gold));
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+}
+
+.btn-outline-dark {
+    border: 2px solid var(--black);
+    color: var(--black);
+    background: transparent;
+}
+
+.btn-outline-dark:hover {
+    background: var(--black);
+    color: var(--white);
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    border-radius: 0;
+    transition: var(--transition);
+}
+
+.card:hover {
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+/* Form Styles */
+.form-control,
+.form-select {
+    border: 2px solid #e0e0e0;
+    border-radius: 0;
+    padding: 12px 20px;
+    transition: var(--transition);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.15);
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--black);
+    margin-bottom: 8px;
+}
+
+/* Badge Styles */
+.badge {
+    padding: 8px 15px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    border-radius: 0;
+}
+
+.badge-gold {
+    background: var(--gold);
+    color: var(--white);
+}
+
+/* Alert Styles */
+.alert {
+    border-radius: 0;
+    border: none;
+}
+
+.alert-info {
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--black);
+    border-left: 4px solid var(--gold);
+}
+
+/* Pagination */
+.pagination .page-link {
+    color: var(--black);
+    border: 2px solid #e0e0e0;
+    border-radius: 0;
+    margin: 0 5px;
+    padding: 10px 20px;
+}
+
+.pagination .page-link:hover {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--white);
+}
+
+.pagination .page-item.active .page-link {
+    background: var(--gold);
+    border-color: var(--gold);
+}
+
+/* Modal Styles */
+.modal-content {
+    border-radius: 0;
+    border: none;
+}
+
+.modal-header {
+    background: var(--light-gray);
+    border-bottom: none;
+}
+
+.modal-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+}
+
+/* Navbar Enhancements */
+.navbar-toggler {
+    border: 2px solid var(--gold);
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+}
+
+/* Footer Enhancements */
+.footer a {
+    transition: var(--transition);
+}
+
+.footer .social-icons a {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    display: inline-block;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-right: 10px;
+    transition: var(--transition);
+}
+
+.footer .social-icons a:hover {
+    background: var(--gold);
+    border-color: var(--gold);
+    transform: translateY(-3px);
+}
+
+/* Animations */
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991px) {
+    .hero-title {
+        font-size: 3rem !important;
+    }
+    
+    .section-title {
+        font-size: 2.5rem !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .hero-title {
+        font-size: 2rem !important;
+    }
+    
+    .section-title {
+        font-size: 2rem !important;
+    }
+    
+    .btn {
+        padding: 10px 25px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .navbar,
+    .footer,
+    .btn,
+    .contact-cta {
+        display: none !important;
+    }
+    
+    body {
+        color: #000;
+    }
+}
