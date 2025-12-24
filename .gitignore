@@ -3,3 +3,5 @@ db.sqlite
 media
 migrations
 *pyc
+.env
+env

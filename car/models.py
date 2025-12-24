@@ -175,7 +175,24 @@ class SiteInfo(models.Model):
     opening_hours = models.TextField( blank=True, null=True)
     video = models.FileField(upload_to="sitesettings/videos")
     
+    
+# pages
 class Aboutpage(models.Model):
     title = models.CharField(max_length=255, blank=True, null=True)
     text = models.TextField( blank=True, null=True)
     banner = models.ImageField(upload_to="sitesettings/about",null=True)
+    code = models.TextField()
+    
+class IndexModel(models.Model):
+    code = models.TextField()
+    
+class ShippingPage(models.Model):
+    code = models.TextField()
+    
+class TermsOfUse(models.Model):
+    code = models.TextField()
+    
+class Privacy(models.Model):
+    code = models.TextField()
+    
+

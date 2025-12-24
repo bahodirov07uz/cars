@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Vehicle, Feature, VehicleImage,Contact,SiteInfo,Brand,Aboutpage
+from .models import Vehicle, Feature, VehicleImage,Contact,SiteInfo,Brand,Aboutpage,IndexModel,ShippingPage,Privacy,TermsOfUse
+from django.contrib.admin import AdminSite,ModelAdmin
 
 class VehicleImageInline(admin.TabularInline):
     model = VehicleImage
@@ -37,7 +38,67 @@ class ContactAdmin(admin.ModelAdmin):
     list_display = ("name", "email", "phone", "car", "created_at")
     list_filter = ("created_at", "car")
     search_fields = ("name", "email", "phone", "message")
-    
-admin.site.register(SiteInfo)
-admin.site.register(Brand)
-admin.site.register(Aboutpage)
+# pages
+
+class PagesModelAdmin(ModelAdmin):
+    # Umumiy sozlamalar
+    list_display = ['__str__']
+    list_per_page = 20
+
+# Har bir model uchun alohida admin class
+@admin.register(SiteInfo)
+class SiteInfoAdmin(PagesModelAdmin):
+    pass
+
+@admin.register(Brand)
+class BrandAdmin(PagesModelAdmin):
+    pass
+
+@admin.register(Aboutpage)
+class AboutpageAdmin(PagesModelAdmin):
+    pass
+
+@admin.register(ShippingPage)
+class ShippingPageAdmin(PagesModelAdmin):
+    pass
+
+@admin.register(TermsOfUse)
+class TermsOfUseAdmin(PagesModelAdmin):
+    pass
+
+@admin.register(Privacy)
+class PrivacyAdmin(PagesModelAdmin):
+    pass
+
+@admin.register(IndexModel)
+class IndexModelAdmin(ModelAdmin):
+    pass
+
+# Admin panelda app nomini o'zgartirish
+from django.apps import apps
+
+# Car app ni Pages deb nomlash
+app_config = apps.get_app_config('car')
+app_config.verbose_name = "Pages"
+
+# Har bir model uchun nomlarni o'zgartirish
+SiteInfo._meta.verbose_name = "Site Info"
+SiteInfo._meta.verbose_name_plural = "Site Infos"
+
+Brand._meta.verbose_name = "Brand"
+Brand._meta.verbose_name_plural = "Brands"
+
+Aboutpage._meta.verbose_name = "About"
+Aboutpage._meta.verbose_name_plural = "About"
+
+ShippingPage._meta.verbose_name = "Shipping"
+ShippingPage._meta.verbose_name_plural = "Shipping"
+
+TermsOfUse._meta.verbose_name = "Terms of Use"
+TermsOfUse._meta.verbose_name_plural = "Terms of Use"
+
+Privacy._meta.verbose_name = "Privacy"
+Privacy._meta.verbose_name_plural = "Privacy"
+
+IndexModel._meta.verbose_name = "Home Page"
+IndexModel._meta.verbose_name_plural = "Home Pages"

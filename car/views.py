@@ -6,8 +6,9 @@ from django.core.mail import send_mail
 from django.db.models import Min,Max
 from django.conf import settings
 from django.urls import reverse_lazy
+from django.template import Template, RequestContext
 
-from .models import VehicleImage,Vehicle,Feature,SiteInfo,Aboutpage
+from .models import VehicleImage,Vehicle,Feature,SiteInfo,Aboutpage,IndexModel,ShippingPage,Privacy,TermsOfUse
 from .forms import ContactForm
 
 
@@ -55,6 +56,7 @@ class HomeView(ListView):
         # Filter uchun ma'lumotlarni tayyorlash
         vehicles = Vehicle.objects.all()
 
+                
         makes = vehicles.values_list('brand', flat=True).distinct()
         context['makes'] = makes
         
@@ -76,7 +78,16 @@ class HomeView(ListView):
                         'range': f"{decade_start}-{decade_end}",
                         'count': len(decade_years)
                     })
-        
+
+        page = IndexModel.objects.first()
+
+        if page:
+            tpl = Template(page.code)
+            rendered_html = tpl.render(RequestContext(self.request, context))
+            context['rendered_code'] = rendered_html
+        else:
+            context['rendered_code'] = ''
+
         context['year_ranges'] = year_ranges
         context['all_years'] = list(years)  # Alohida yillar ham kerak bo'lsa
         
@@ -84,7 +95,7 @@ class HomeView(ListView):
         price_range = vehicles.aggregate(min_price=Min('price'), max_price=Max('price'))
         context['min_price_value'] = price_range['min_price'] or 0
         context['max_price_value'] = price_range['max_price'] or 100000
-        
+        context['code'] = IndexModel.objects.first()
         # Joriy filter parametrlarini saqlash
         context['current_make'] = self.request.GET.get('make', 'all')
         context['current_year'] = self.request.GET.get('year', 'all')
@@ -164,6 +175,15 @@ class AboutPage(ListView):
     def get_context_data(self, **kwargs):
         context =  super().get_context_data(**kwargs)
         context['ab'] = Aboutpage.objects.all().first()
+        
+        page = Aboutpage.objects.first()
+
+        if page:
+            tpl = Template(page.code)
+            rendered_html = tpl.render(RequestContext(self.request, context))
+            context['rendered_code'] = rendered_html
+        else:
+            context['rendered_code'] = ''
         return context
     
 # class FinanceView(TemplateView):
@@ -171,9 +191,44 @@ class AboutPage(ListView):
 
 class ShippingView(TemplateView):
     template_name = 'shipping.html'
+    def get_context_data(self, **kwargs):
+        context =  super().get_context_data(**kwargs)
+        page = ShippingPage.objects.first()
+
+        if page:
+            tpl = Template(page.code)
+            rendered_html = tpl.render(RequestContext(self.request, context))
+            context['rendered_code'] = rendered_html
+        else:
+            context['rendered_code'] = ''
+        return context
     
-# class PrivacyView(TemplateView):
-#     template_name = 'privacy.html'
+class PrivacyView(TemplateView):
+    template_name = 'privacy.html'
+    def get_context_data(self, **kwargs):
+        context =  super().get_context_data(**kwargs)
+        page = Privacy.objects.first()
+
+        if page:
+            tpl = Template(page.code)
+            rendered_html = tpl.render(RequestContext(self.request, context))
+            context['rendered_code'] = rendered_html
+        else:
+            context['rendered_code'] = ''
+        return context
     
-# class TermsOfUseView(TemplateView):
-#     template_name = 'termsofuse.html'
+    
+class TermsOfUseView(TemplateView):
+    template_name = 'termsofuse.html'
+    def get_context_data(self, **kwargs):
+        context =  super().get_context_data(**kwargs)
+        page = TermsOfUse.objects.first()
+
+        if page:
+            tpl = Template(page.code)
+            rendered_html = tpl.render(RequestContext(self.request, context))
+            context['rendered_code'] = rendered_html
+        else:
+            context['rendered_code'] = ''
+        return context
+    
